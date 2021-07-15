@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix, precision_score
 from sklearn.svm import LinearSVC
 
 # %% Read data
@@ -55,15 +56,19 @@ features = ["Pclass", "Age", "Sex", "FamilySize", "Status", "Fare"]
 X = pd.get_dummies(train[features])
 X_test = pd.get_dummies(test[features])
 
-model = RandomForestClassifier(n_estimators=120, max_depth=3, random_state=3)
+model = RandomForestClassifier(n_estimators=100, max_depth=3, random_state=2)
 # model = LinearSVC()
 model.fit(X, y)
 predictions = model.predict(X_test)
+
+predictions2 = model.predict(X)
+print(confusion_matrix(y, predictions2))
+print(precision_score(y, predictions2))
+print(1 - sum(np.abs(y - predictions2)) / len(y))
+
 
 
 # %%
 output = pd.DataFrame({'PassengerId': test.PassengerId, 'Survived': predictions})
 output.to_csv('my_submission.csv', index=False)
-
-
 
